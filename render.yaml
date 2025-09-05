@@ -5,7 +5,6 @@ services:
     plan: free
     autoDeploy: true
     region: singapore
-    dockerfilePath: ./Dockerfile.api
     healthCheckPath: /docs
     envVars:
       - key: DATABASE_URL
@@ -27,7 +26,6 @@ services:
     plan: free
     autoDeploy: true
     region: singapore
-    dockerfilePath: ./Dockerfile.bot
     envVars:
       - key: DATABASE_URL
         fromDatabase:
