@@ -6,7 +6,8 @@ import models, schemas, database
 import gmail_service
 import email_parser
 import email_summary
-
+from dotenv import load_dotenv
+load_dotenv()
 
 models.Base.metadata.create_all(bind=database.engine)
 
