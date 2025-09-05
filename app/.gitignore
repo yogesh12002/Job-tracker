@@ -59,3 +59,6 @@ token.json
 # Temporary files
 *.tmp
 *.temp
+.__pycache__
+.env.example
+.env
