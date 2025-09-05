@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 from apscheduler.schedulers.background import BackgroundScheduler
-import models, schemas, database
+from app import models, schemas, database
 import gmail_service
 import email_parser
 import email_summary
