@@ -1,5 +1,5 @@
 import yagmail
-import database, models
+from . import database, models
 
 EMAIL_USER = "your_email@gmail.com"
 EMAIL_PASS = "your_app_password"
