@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: job-tracker-api
+    env: docker
+    plan: free
+    autoDeploy: true
+    region: singapore
+    dockerfilePath: ./Dockerfile.api
+    healthCheckPath: /docs
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: job-tracker-db
+          property: connectionString
+      - key: TELEGRAM_TOKEN
+        sync: false
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
+      - key: GMAIL_QUERY
+        value: 'from:(linkedin.com OR naukri.com OR internshala.com OR indeed.com)'
+
+  - type: worker
+    name: job-tracker-bot
+    env: docker
+    plan: free
+    autoDeploy: true
+    region: singapore
+    dockerfilePath: ./Dockerfile.bot
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: job-tracker-db
+          property: connectionString
+      - key: TELEGRAM_TOKEN
+        sync: false
+
+databases:
+  - name: job-tracker-db
+    plan: free
