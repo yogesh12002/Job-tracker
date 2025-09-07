@@ -1,7 +1,7 @@
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from sqlalchemy.orm import Session
-import database, models
+from . import database, models
 import logging
 logging.basicConfig(level=logging.INFO)
 from dotenv import load_dotenv
@@ -32,7 +32,7 @@ async def get_status(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(reply)
 
 def run_bot():
-    app = Application.builder().token(TOKEN).build()
+    app = Application.builder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("status", get_status))

@@ -1,9 +1,10 @@
 import yagmail
+import os
 from . import database, models
 
-EMAIL_USER = "your_email@gmail.com"
-EMAIL_PASS = "your_app_password"
-TO_EMAIL = "your_email@gmail.com"
+EMAIL_USER = os.getenv("EMAIL_USER", "your_email@gmail.com")
+EMAIL_PASS = os.getenv("EMAIL_PASS", "your_app_password")
+TO_EMAIL = os.getenv("TO_EMAIL", "your_email@gmail.com")
 
 def send_daily_summary():
     db = database.SessionLocal()

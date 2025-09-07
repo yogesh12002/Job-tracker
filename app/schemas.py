@@ -6,7 +6,7 @@ class ApplicationBase(BaseModel):
     company_name: str
     role: str
     platform: str
-    date_applied: date
+    date_applied: Optional[date] = None
     status: Optional[str] = "Applied"
     job_link: Optional[str] = None
 

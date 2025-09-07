@@ -3,11 +3,10 @@ from sqlalchemy.orm import Session
 from typing import List
 from apscheduler.schedulers.background import BackgroundScheduler
 from . import models, schemas, database
-from . import gmail_service
-from . import email_parser
-from . import email_summary
+from . import gmail_service, email_parser, email_summary
 from .database import Base
 from dotenv import load_dotenv
+import os
 load_dotenv()
 
 models.Base.metadata.create_all(bind=database.engine)
@@ -51,37 +50,47 @@ def get_status_by_company(company: str, db: Session = Depends(get_db)):
 
 # ------------------- EMAIL SYNC LOGIC ------------------- #
 def sync_emails_job():
+    """Sync emails from Gmail and update application statuses"""
+    try:
     db = database.SessionLocal()
     service = gmail_service.get_gmail_service()
-    results = service.users().messages().list(
-        userId='me',
-        q="from:(linkedin.com OR naukri.com OR internshala.com OR indeed.com)"
-    ).execute()
+        
+        gmail_query = os.getenv("GMAIL_QUERY", "from:(linkedin.com OR naukri.com OR internshala.com OR indeed.com)")
+        results = service.users().messages().list(
+            userId='me',
+            q=gmail_query
+        ).execute()
 
-    messages = results.get('messages', [])
-    updated_apps = []
+        messages = results.get('messages', [])
+        updated_apps = []
 
-    for m in messages[:10]:
-        msg = service.users().messages().get(userId='me', id=m['id']).execute()
-        parsed = email_parser.parse_email(msg)
+        for m in messages[:10]:  # Process last 10 emails
+            msg = service.users().messages().get(userId='me', id=m['id']).execute()
+            parsed = email_parser.parse_email(msg)
 
-        db_app = db.query(models.Application).filter(
-            models.Application.company_name.ilike(f"%{parsed['subject']}%")
-        ).first()
+            # Try to match email with existing applications
+            db_app = db.query(models.Application).filter(
+                models.Application.company_name.ilike(f"%{parsed['subject']}%")
+            ).first()
 
-        if db_app:
-            db_app.status = parsed["status"]
-            db.commit()
-            db.refresh(db_app)
-            updated_apps.append({
-                "company": db_app.company_name,
-                "new_status": db_app.status,
-                "email_subject": parsed["subject"]
-            })
+            if db_app and db_app.status != parsed["status"]:
+                old_status = db_app.status
+                db_app.status = parsed["status"]
+                db.commit()
+                db.refresh(db_app)
+                updated_apps.append({
+                    "company": db_app.company_name,
+                    "old_status": old_status,
+                    "new_status": db_app.status,
+                    "email_subject": parsed["subject"]
+                })
 
-    db.close()
-    print("✅ Gmail Sync Completed:", updated_apps)
-    return updated_apps
+        db.close()
+        print("✅ Gmail Sync Completed:", updated_apps)
+        return updated_apps
+    except Exception as e:
+        print(f"❌ Gmail Sync Error: {str(e)}")
+        return []
 
 @app.post("/sync-emails")
 def manual_sync():
@@ -90,7 +99,15 @@ def manual_sync():
 
 # ------------------- SCHEDULER ------------------- #
 scheduler = BackgroundScheduler()
-scheduler.add_job(sync_emails_job, "interval", hours=12)  # run every 12 hours
-scheduler.add_job(email_summary.send_daily_summary, "cron", hour=9)
+scheduler.add_job(sync_emails_job, "interval", hours=12, id="email_sync")  # run every 12 hours
+scheduler.add_job(email_summary.send_daily_summary, "cron", hour=9, id="daily_summary")
 
-scheduler.start()
+@app.on_event("startup")
+async def startup_event():
+    scheduler.start()
+    print("✅ Scheduler started")
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    scheduler.shutdown()
+    print("✅ Scheduler stopped")
