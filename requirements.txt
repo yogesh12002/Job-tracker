@@ -11,3 +11,4 @@ python-dotenv
 requests
 beautifulsoup4
 yagmail
+pydantic
