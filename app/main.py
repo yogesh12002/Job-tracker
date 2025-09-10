@@ -58,6 +58,7 @@ def get_status_by_company(company: str, db: Session = Depends(get_db)):
     return db.query(models.Application).filter(models.Application.company_name.ilike(f"%{company}%")).all()
 
 # ------------------- EMAIL SYNC LOGIC ------------------- #
+
 def sync_emails_job():
     """Sync emails from Gmail and update application statuses"""
     try:
