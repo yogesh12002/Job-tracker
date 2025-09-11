@@ -9,6 +9,7 @@ TO_EMAIL = os.getenv("TO_EMAIL", "your_email@gmail.com")
 def send_daily_summary():
     db = database.SessionLocal()
     apps = db.query(models.Application).all()
+    
     db.close()
 
     if not apps:
