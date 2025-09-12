@@ -13,6 +13,7 @@ services:
           name: job-tracker-db
           property: connectionString
       - key: TELEGRAM_TOKEN
+      
         sync: false
       - key: EMAIL_USER
         sync: false
