@@ -2,8 +2,7 @@
 Job Tracker Bot is a FastAPI-powered backend service designed to help users monitor job applications, automate status updates, and streamline communication between candidates and recruiters. It integrates with messaging platforms (e.g., Telegram or Slack) to provide real-time updates, reminders, and analytics. 
 # 🧠 Job Tracker Bot
 
-A FastAPI-based backend service that helps users track job applications, automate updates, and receive real-t
-ime notifications via messaging platforms.
+A FastAPI-based backend service that helps users track job applications, automate updates, and receive real-time notifications via messaging platforms.
 
 ---
 
