@@ -11,6 +11,7 @@ TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")  # set in your .env
 def get_db():
     db = database.SessionLocal()
     return db
+    
 
 # ------------------- Handlers ------------------- #
 async def start(update: Update, context: CallbackContext):
