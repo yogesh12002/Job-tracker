@@ -2,6 +2,7 @@ import base64
 import re
 from bs4 import BeautifulSoup
 
+
 STATUS_KEYWORDS = {
     "rejected": "Rejected",
     "declined": "Rejected",
