@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app import database, models
 from app.main import sync_emails_job   # reuse Gmail sync
 
+
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")  # set in your .env
 
 # ------------------- DB Dependency ------------------- #
