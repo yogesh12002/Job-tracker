@@ -14,6 +14,7 @@ def get_db():
     return db
     
 
+
 # ------------------- Handlers ------------------- #
 async def start(update: Update, context: CallbackContext):
     await update.message.reply_text(
