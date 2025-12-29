@@ -3,7 +3,8 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, CallbackContext
 from sqlalchemy.orm import Session
 from app import database, models
-from app.main import sync_emails_job   # reuse Gmail sync
+from app.main import sync_emails_job 
+# reuse Gmail sync
 
 
 
