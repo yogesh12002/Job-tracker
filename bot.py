@@ -8,7 +8,8 @@ from app.main import sync_emails_job
 
 
 
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")  # set in your .env
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")  
+# set in your .env
 
 # ------------------- DB Dependency ------------------- #
 def get_db():
